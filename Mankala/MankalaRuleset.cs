@@ -43,26 +43,35 @@ namespace Mankala
             GeneralPocket opposing = GetOpposing(endingPocket, board);
             bool opposingIsEmpty = opposing.AmountOfStones() == 1;
 
-            //These Cases dont entirely work right now :(
-            if (endPocketIsOwn && endingPocket is HomePocket)
-                return true;
-            if (!endPocketIsOwn && endPocketIsEmpty)
+            //Last stone lands in homePocket of player
+            if (endingPocket is HomePocket)
                 return false;
-            if (!endPocketIsOwn && opposingIsEmpty)
-                return true;
-            if (endPocketIsOwn && opposing.IsEmpty())
-                return false;
-            if (endPocketIsOwn && endPocketIsEmpty && !opposingIsEmpty)
-            {
-                int stonesForHome = 1;
-                endingPocket.AddStones(-1);
-                stonesForHome += opposing.EmptyPocket();
-                AddToHomePocket(playerAtTurn, stonesForHome,board);
-                return false;
-            }
-            //Default case, shouldn't be reached either way
-            return false;
 
+            //Last stone ends in non empty pocket
+            if (endingPocket.AmountOfStones() > 1)
+                return false; //Shouldn't be reached cuz forced move
+
+            //Last stone ends in empty pocket of opponent
+            if (endPocketIsEmpty && !endPocketIsOwn)
+                return true;
+
+            //Last stone ends in empty pocket of player and opposing is empty
+            if (endPocketIsEmpty && endPocketIsOwn && opposingIsEmpty)
+                return true;
+
+            //Last stone ends in empty pocket of player and opposing is not empty 
+            if(endPocketIsEmpty && endPocketIsOwn && !opposingIsEmpty)
+            {
+                int a = endingPocket.EmptyPocket();
+                int b = opposing.EmptyPocket();
+                GeneralPocket[] pockets = board.pocketList;
+                if (pockets[0].GetOwner() == playerAtTurn)
+                    board.pocketList[0].AddStones(a + b);
+                else
+                    board.pocketList[pockets.Length / 2].AddStones(a + b);
+                return true;
+            }
+            throw new Exception("This should not be reached");
         }
 
         public override Board MakeBoard(Board b, Player p1, Player p2)
