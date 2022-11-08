@@ -8,12 +8,12 @@ namespace Mankala
 {
     internal class Player
     {
-        private string playerName;
+        public string playerName;
         private int playerIndex;
 
-        public Player()
+        public Player(string name)
         {
-
+            playerName = name;
         }
     }
 }

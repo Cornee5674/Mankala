@@ -8,9 +8,23 @@ namespace Mankala
 {
     internal class Pocket : GeneralPocket
     {
+        public Pocket(int index, Player player)
+        {
+            this.amountOfStones = 0;
+            this.index = index;
+            this.owner = player;
+
+        }
+        public Pocket(int index, int amountOfStones, Player player)
+        {
+            this.amountOfStones = amountOfStones;
+            this.index = index;
+            this.owner = player;
+        }
         public override bool UpdatePocket(Player player)
         {
-            throw new NotImplementedException();
+            amountOfStones++;
+            return true;
         }
 
         public override int EmptyPocket()

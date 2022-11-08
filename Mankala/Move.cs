@@ -8,9 +8,9 @@ namespace Mankala
 {
     internal class Move
     {
-        Player currentPlayer;
-        GeneralPocket endingPocket;
-        public Move(Player currentPlayer, Pocket endingPocket)
+        public Player currentPlayer;
+        public GeneralPocket endingPocket;
+        public Move(Player currentPlayer, GeneralPocket endingPocket)
         {
             this.currentPlayer = currentPlayer;
             this.endingPocket = endingPocket;
