@@ -262,6 +262,7 @@ namespace Mankala
             this.amountOfPocketsField.Name = "amountOfPocketsField";
             this.amountOfPocketsField.Size = new System.Drawing.Size(120, 22);
             this.amountOfPocketsField.TabIndex = 0;
+            this.amountOfPocketsField.Value = 6;
             // 
             // label2
             // 
@@ -294,6 +295,7 @@ namespace Mankala
             this.amountOfStonesField.Name = "amountOfStonesField";
             this.amountOfStonesField.Size = new System.Drawing.Size(120, 22);
             this.amountOfStonesField.TabIndex = 3;
+            this.amountOfStonesField.Value = 4;
             // 
             // label4
             // 
