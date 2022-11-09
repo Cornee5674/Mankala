@@ -13,21 +13,18 @@ namespace Mankala
             amountOfPockets = 6;
             hasHomePockets = true;
             stonesPerPocket = 4;
+            hasForcedMoves = true;
+        }
+        public MankalaRuleset(int amountOfPockets, int stonesPerPocket)
+        {
+            this.amountOfPockets = amountOfPockets;
+            this.stonesPerPocket = stonesPerPocket;
+            hasHomePockets = true;
+            hasForcedMoves = true;
         }
         public override bool GameIsFinished(Board board, Player playerAtTurn)
         {
-            //In Mankala the game ends when a player has no more pockets with stones in them
-            GeneralPocket[] temp = board.pocketList;
-            for (int i = 0; i < temp.Length; i++)
-            {
-                if (!(temp[i] is Pocket)) //Ignore homePockets
-                    continue;
-                if (temp[i].GetOwner() != playerAtTurn) //Ignore pockets of the opposing player
-                    continue;
-                if (temp[i].AmountOfStones() != 0) // If any pocket is not empty the game isnt finished yet
-                    return false;
-            }
-            return true;
+            return base.GameIsFinished(board, playerAtTurn);
         }
 
         public override bool SamePlayerAtTurn(Move move, Board board)
@@ -41,7 +38,7 @@ namespace Mankala
             //An empty pocket has 1 stone after the move is done
             bool endPocketIsEmpty = endingPocket.AmountOfStones() == 1;
             GeneralPocket opposing = GetOpposing(endingPocket, board);
-            bool opposingIsEmpty = opposing.AmountOfStones() == 1;
+            bool opposingIsEmpty = opposing.AmountOfStones() <= 1;
 
             //Last stone lands in homePocket of player
             if (endingPocket is HomePocket)
@@ -89,7 +86,7 @@ namespace Mankala
         public override bool IsForcedTurn(Move move, Board board)
         {
             //If the last stone lands in another pocket than the home pocket and it isn't empty its a forced turn
-            if (move.endingPocket is Pocket && !move.endingPocket.IsEmpty())
+            if (move.endingPocket is Pocket && move.endingPocket.AmountOfStones() > 1)
                 return true;
             return false;
 

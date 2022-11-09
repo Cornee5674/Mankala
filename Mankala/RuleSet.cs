@@ -11,13 +11,28 @@ namespace Mankala
         protected int amountOfPockets;
         protected int stonesPerPocket;
         protected bool hasHomePockets;
+        public bool hasForcedMoves;
 
         public RuleSet()
         {
         }
 
         public abstract bool SamePlayerAtTurn(Move move, Board board);
-        public abstract bool GameIsFinished(Board board, Player p);
+        public virtual bool GameIsFinished(Board board, Player playerAtTurn)
+        {
+            //In most versions the game ends when a player has no more pockets with stones in them
+            GeneralPocket[] temp = board.pocketList;
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (!(temp[i] is Pocket)) //Ignore homePockets
+                    continue;
+                if (temp[i].GetOwner() != playerAtTurn) //Ignore pockets of the opposing player
+                    continue;
+                if (temp[i].AmountOfStones() != 0) // If any pocket is not empty the game isnt finished yet
+                    return false;
+            }
+            return true;
+        }
         public abstract Board MakeBoard(Board b,Player p1, Player p2);
         protected GeneralPocket GetOpposing(GeneralPocket originalPocket, Board board)
         {
@@ -32,8 +47,7 @@ namespace Mankala
         }
         protected void AddToHomePocket(Player p, int stones, Board board)
         {
-            if (!hasHomePockets)
-                throw new ImpossibleStateException("Can't add to Home pockets if there are none");
+            
             if (board.pocketList[0].GetOwner() == p)
             {
                 board.pocketList[0].AddStones(stones);

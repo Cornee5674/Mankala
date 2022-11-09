@@ -11,22 +11,21 @@ namespace Mankala
         public virtual Board createBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
         {
             int lengthArray;
-            if (hasHomePockets)
                 lengthArray = 2 * pocketsPerPlayer + 2;
-            else
-                lengthArray = 2 * pocketsPerPlayer;
+            
 
             GeneralPocket[] pocketList = new GeneralPocket[lengthArray];
 
-            pocketList[0] = new HomePocket(0,p1);
+            pocketList[0] = new HomePocket(0,p2,hasHomePockets);
             for (int i = 1; i < pocketsPerPlayer + 1; i++)
             {
-                pocketList[i] = new Pocket(i,stonesPerPocket,p1);
+                pocketList[i] = new Pocket(i,stonesPerPocket,p2);
             }
-            pocketList[pocketsPerPlayer + 1] = new HomePocket(pocketsPerPlayer+1,p2);
+
+            pocketList[pocketsPerPlayer + 1] = new HomePocket(pocketsPerPlayer+1,p1,hasHomePockets);
             for (int i = pocketsPerPlayer + 2; i < pocketList.Length; i++)
             {
-                pocketList[i] = new Pocket(i,stonesPerPocket,p2);
+                pocketList[i] = new Pocket(i,stonesPerPocket,p1);
             }
             return new Board(pocketList);
         }
@@ -37,6 +36,13 @@ namespace Mankala
         public override Board createBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
         {
             return base.createBoard(pocketsPerPlayer, hasHomePockets, stonesPerPocket,p1,p2);
+        }
+    }
+    class WakiFactory : BoardFactory
+    {
+        public override Board createBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
+        {
+            return base.createBoard(pocketsPerPlayer, hasHomePockets, stonesPerPocket, p1, p2);
         }
     }
 }

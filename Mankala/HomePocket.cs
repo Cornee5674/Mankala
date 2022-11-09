@@ -8,22 +8,27 @@ namespace Mankala
 {
     internal class HomePocket : GeneralPocket
     {
-        public HomePocket(int index, Player player)
+        bool isActive;
+        public HomePocket(int index, Player player, bool isActive)
         {
             this.amountOfStones = 0;
             this.index = index;
             this.owner = player;
+            this.isActive = isActive;
 
         }
-        public HomePocket(int index, int amountOfStones, Player player)
+        public HomePocket(int index, int amountOfStones, Player player, bool isActive)
         {
             this.amountOfStones = amountOfStones;
             this.index = index;
             this.owner = player;
+            this.isActive = isActive;
         }
         public override bool UpdatePocket(Player player)
         {
-            //owner never gets assigned so this is always true
+            //If the home pocket doesn't partake in the game -> always skip
+            if (!isActive)
+                return false;
             if (player != owner)
                 return false;
             

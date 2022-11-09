@@ -1,0 +1,5 @@
+﻿Eigen variant aan regels		[]
+Refactoring						[]
+Schrijven van tests				[]
+Factory moet beter				[]
+Al het verslag werk :(			[]
