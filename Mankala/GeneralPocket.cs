@@ -15,30 +15,33 @@ namespace Mankala
         public abstract bool UpdatePocket(Player player);
         public virtual int EmptyPocket()
         {
-            int temp = amountOfStones;
+            //Empties the pocket and returns the amount of stones that were in there
+            int stonesInThisPocket = amountOfStones;
             amountOfStones = 0;
-            return temp;
+            return stonesInThisPocket;
         }
         public void AddStones(int a)
         {
+            //Adds Stones to this pocket
             amountOfStones += a;
+        }
+        public bool IsEmpty()
+        {
+            //Checks if the pocket is empty
+            return amountOfStones == 0;
         }
 
         public virtual Player GetOwner()
         {
             return owner;
         }
-        public virtual int AmountOfStones()
+        public virtual int GetAmountOfStones()
         {
             return amountOfStones;
         }
         public virtual int GetIndex()
         {
             return index;
-        }
-        public bool IsEmpty()
-        {
-            return amountOfStones == 0;
         }
 
 

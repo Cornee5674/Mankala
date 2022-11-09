@@ -29,29 +29,27 @@ namespace Mankala
 
         public override bool IsForcedTurn(Move move, Board board)
         {
-            //Waki does no have forced moves
+            //Waki does not have forced moves
             return false;
         }
 
         public override Board MakeBoard(Board b, Player p1, Player p2)
         {
-            if(b is null)
-            {
-                WakiFactory f = new WakiFactory();
-                Board res = f.createBoard(amountOfPockets, hasHomePockets, stonesPerPocket, p1, p2);
-                return res;
-            }
-            return b;
+            WakiFactory f = new WakiFactory();
+            return f.createBoard(amountOfPockets, hasHomePockets, stonesPerPocket, p1, p2);
+            
         }
 
-        public override bool SamePlayerAtTurn(Move move, Board board)
+        public override bool NeedToSwitchPlayer(Move move, Board board)
         {
+            //Returns true if the other player has the turn after this move
             Player playerAtTurn = move.currentPlayer;
             GeneralPocket endingPocket = move.endingPocket;
             //If the ending pocket is of the player at turn, the opposing player gets to play
             if (endingPocket.GetOwner() == playerAtTurn)
                 return true;
-            if(endingPocket.AmountOfStones() == 2 || endingPocket.AmountOfStones() == 3)
+            //If there is 2 or 3 stones in the ending pocket after a move, they are all thrown into the homepocket
+            if(endingPocket.GetAmountOfStones() == 2 || endingPocket.GetAmountOfStones() == 3)
             {
                 int stones = endingPocket.EmptyPocket();
                 AddToHomePocket(playerAtTurn, stones, board);

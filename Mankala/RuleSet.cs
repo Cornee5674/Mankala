@@ -12,12 +12,11 @@ namespace Mankala
         protected int stonesPerPocket;
         protected bool hasHomePockets;
         public bool hasForcedMoves;
-
         public RuleSet()
         {
         }
 
-        public abstract bool SamePlayerAtTurn(Move move, Board board);
+        public abstract bool NeedToSwitchPlayer(Move move, Board board);
         public virtual bool GameIsFinished(Board board, Player playerAtTurn)
         {
             //In most versions the game ends when a player has no more pockets with stones in them
@@ -28,7 +27,7 @@ namespace Mankala
                     continue;
                 if (temp[i].GetOwner() != playerAtTurn) //Ignore pockets of the opposing player
                     continue;
-                if (temp[i].AmountOfStones() != 0) // If any pocket is not empty the game isnt finished yet
+                if (temp[i].GetAmountOfStones() != 0) // If any pocket is not empty the game isnt finished yet
                     return false;
             }
             return true;
@@ -39,15 +38,15 @@ namespace Mankala
             //Returns the pocket which is on the other side of the board
             int index = originalPocket.GetIndex();
             int x = amountOfPockets - index;
-            //Overflow error
             int pocketIndexOpposing = amountOfPockets + 2 + x;
+            //Deals with the looping around the board
             if (pocketIndexOpposing >= board.pocketList.Length)
                 pocketIndexOpposing -= board.pocketList.Length;
             return board.pocketList[pocketIndexOpposing];
         }
         protected void AddToHomePocket(Player p, int stones, Board board)
         {
-            
+            //Adds a specific amount of stones to the homepocket of the specified player
             if (board.pocketList[0].GetOwner() == p)
             {
                 board.pocketList[0].AddStones(stones);

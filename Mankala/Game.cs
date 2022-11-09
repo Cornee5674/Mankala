@@ -17,29 +17,19 @@ namespace Mankala
         RuleSet ruleset;
         Screen screen;
         Label playerAtTurnLabel;
-        Button nextForcedTurn;
-        private NumericUpDown amountOfPocketsField;
-        private Label label2;
-        private Label label3;
-        private NumericUpDown amountOfStonesField;
-        private Label label4;
-        private Label label5;
-        private TextBox player1Name;
-        private TextBox player2Name;
-        private RadioButton MankalaButton;
-        private RadioButton wakiButton;
-        private RadioButton customButton;
-        private Button initConfirmButton;
-        private Label label1;
+        Button nextForcedTurnButton;
         int nextForcedMove = -1;
 
         public Game()
         {
+            this.DoubleBuffered = true;
             DrawStartScreen();
         }
         
         private void InitValuesConfirm(object sender, EventArgs e)
         {
+            //Event handler from the confirm button when selecting your rules
+            //Gets all values from the fields and stores them
             int stonesPP = Decimal.ToInt32(amountOfStonesField.Value);
             int pocketsPP = Decimal.ToInt32(amountOfPocketsField.Value);
             if (stonesPP == 0 || pocketsPP == 0)
@@ -66,17 +56,28 @@ namespace Mankala
             }
             player1 = new Player(player1Name.Text);
             player2 = new Player(player2Name.Text);
+
+            //Clears the current fields
             this.Controls.Clear();
+            //Draws the playing board
             DrawBoard();
 
 
         }
         private void DrawBoard()
         {
-            currentPlayer = player1;
+            //Create board
             board = ruleset.MakeBoard(board, player1, player2);
+            currentPlayer = player1;
             Size s = CalcScreenSize();
             this.Size = s;
+
+            CreateScreen(s);
+
+        }
+        private void CreateScreen(Size s)
+        {
+            //Initiation of screen
             screen = new Screen();
             screen.Paint += ReDraw;
             screen.MouseClick += MouseIsClicked;
@@ -86,12 +87,12 @@ namespace Mankala
             playerAtTurnLabel.Text = player1.playerName + " is at Turn";
             screen.Controls.Add(playerAtTurnLabel);
 
-            nextForcedTurn = new Button();
-            nextForcedTurn.Location = new Point(s.Width / 2 - 100, 10);
-            nextForcedTurn.Text = "Next Forced";
-            nextForcedTurn.Visible = false;
-            nextForcedTurn.Click += DoForcedTurn;
-            screen.Controls.Add(nextForcedTurn);
+            nextForcedTurnButton = new Button();
+            nextForcedTurnButton.Location = new Point(s.Width / 2 - 100, 10);
+            nextForcedTurnButton.Text = "Next Forced";
+            nextForcedTurnButton.Visible = false;
+            nextForcedTurnButton.Click += DoForcedTurn;
+            screen.Controls.Add(nextForcedTurnButton);
 
             Label p1 = new Label();
             p1.AutoSize = true;
@@ -105,16 +106,16 @@ namespace Mankala
 
             screen.Controls.Add(p1);
             screen.Controls.Add(p2);
-
-            this.DoubleBuffered = true;
-            Controls.Add(screen);
+            this.Controls.Add(screen);
         }
         private Size CalcScreenSize()
         {
+            //Method that calculates the size of the screen based on the size of the board
             return new Size(75 * (board.pocketList.Length/2) + 125, 250);
         }
         private void ReDraw(object obj, PaintEventArgs pea)
         {
+            //Draw the board
             Graphics gr = pea.Graphics;
             screen.DrawBoard(gr, board);
         }
@@ -127,24 +128,32 @@ namespace Mankala
                 return;
             WantToDoTurn(index,true);
         }
-
         private int IndexFromClick(int x, int y)
         {
+            //List of the hitboxes of all the pockets
             Rectangle[] rects = screen.allPockets;
             Point p = new Point(x, y);
+
             for (int i = 0; i < rects.Length; i++)
             {
                 if (rects[i].Contains(p))
                     return i;
             }
-            return -1;
+            return -1; //return -1 if no square was clicked
         }
 
         public void WantToDoTurn(int index, bool isFirst)
         {
             if (ruleset.GameIsFinished(board, currentPlayer))
             {
-                MessageBox.Show("The game is finished");
+                int stonesp2 = board.pocketList[0].GetAmountOfStones();
+                int stonesp1 = board.pocketList[board.pocketList.Length/2].GetAmountOfStones();
+                if (stonesp1 > stonesp2)
+                    MessageBox.Show("The game is finished. " + player2.playerName + " wins!");
+                else if (stonesp1 < stonesp2)
+                    MessageBox.Show("The game is finished. " + player1.playerName + " wins!");
+                else
+                    MessageBox.Show("The game is finished. It is a draw");
                 return;
             }
                 
@@ -152,6 +161,7 @@ namespace Mankala
             int chosenPocket = index;
             int halfOfPockets = board.pocketList.Length / 2;
 
+            //If there is a forced move you have to play that and can't play anything else
             if (nextForcedMove >= 0 && nextForcedMove != index)
             {
                 MessageBox.Show("You have a forced move");
@@ -160,9 +170,10 @@ namespace Mankala
             if (index == -1)
                 throw new Exception("Something happened");
 
+            //Checks if this is the first move and if we are not in some sort of forced move loop
             if (isFirst)
             {
-                //Checks if the move is illegal, returns if its the case
+                //Checks if the move is illegal, and returns if this is the case
                 if (board.pocketList[chosenPocket].IsEmpty())
                 {
                     MessageBox.Show("Illegal move: " + chosenPocket + " is empty");
@@ -193,25 +204,28 @@ namespace Mankala
             if (ruleset.IsForcedTurn(move, board))
             {
                 nextForcedMove = move.endingPocket.GetIndex();
-                nextForcedTurn.Visible = true;
+                nextForcedTurnButton.Visible = true;
             }
             //Checks if the other player has his turn now
-            else if (ruleset.SamePlayerAtTurn(move, board))
+            else if (ruleset.NeedToSwitchPlayer(move, board))
             {
                 currentPlayer = PlayerChange(currentPlayer);
-                nextForcedMove = -1;
+                nextForcedMove = -1; // -1 means there is no forced move active right now
             }
             else
                 nextForcedMove = -1;
-            screen.Invalidate();
+
+            screen.Invalidate(); // Redraw the board
         }
         private void DoForcedTurn(object obj, EventArgs ea)
         {
-            nextForcedTurn.Visible = false;
+            //Event handler for doForcedTurnButton
+            nextForcedTurnButton.Visible = false;
             WantToDoTurn(nextForcedMove, false);
         }
         private Player PlayerChange(Player current)
         {
+            //Method that changes the current player and updates the label at the top
             if (current == player1)
             {
                 playerAtTurnLabel.Text = player2.playerName + " is at Turn";
@@ -224,7 +238,8 @@ namespace Mankala
 
         private void DrawStartScreen()
         {
-            this.label1 = new Label();
+            //Designer generated code
+            this.label1 = new System.Windows.Forms.Label();
             this.amountOfPocketsField = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -378,7 +393,19 @@ namespace Mankala
             this.PerformLayout();
 
         }
-
-        
+        //All GUI components
+        private NumericUpDown amountOfPocketsField;
+        private Label label2;
+        private Label label3;
+        private NumericUpDown amountOfStonesField;
+        private Label label4;
+        private Label label5;
+        private TextBox player1Name;
+        private TextBox player2Name;
+        private RadioButton MankalaButton;
+        private RadioButton wakiButton;
+        private RadioButton customButton;
+        private Button initConfirmButton;
+        private Label label1;
     }
 }
