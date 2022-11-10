@@ -36,7 +36,7 @@ namespace Mankala
         public override Board MakeBoard(Board b, Player p1, Player p2)
         {
             WakiFactory f = new WakiFactory();
-            return f.createBoard(amountOfPockets, hasHomePockets, stonesPerPocket, p1, p2);
+            return f.CreateBoard(amountOfPockets, hasHomePockets, stonesPerPocket, p1, p2);
             
         }
 
@@ -46,10 +46,10 @@ namespace Mankala
             Player playerAtTurn = move.currentPlayer;
             GeneralPocket endingPocket = move.endingPocket;
             //If the ending pocket is of the player at turn, the opposing player gets to play
-            if (endingPocket.GetOwner() == playerAtTurn)
+            if (endingPocket.IsOwner(playerAtTurn))
                 return true;
             //If there is 2 or 3 stones in the ending pocket after a move, they are all thrown into the homepocket
-            if(endingPocket.GetAmountOfStones() == 2 || endingPocket.GetAmountOfStones() == 3)
+            if(endingPocket.AmountofStones == 2 || endingPocket.AmountofStones == 3)
             {
                 int stones = endingPocket.EmptyPocket();
                 AddToHomePocket(playerAtTurn, stones, board);

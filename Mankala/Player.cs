@@ -8,10 +8,14 @@ namespace Mankala
 {
     internal class Player
     {
-        public string playerName;
+        private readonly string playerName;
         public Player(string name)
         {
             playerName = name;
+        }
+        public string Name
+        {
+            get { return playerName; }
         }
     }
 }

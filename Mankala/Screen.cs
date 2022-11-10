@@ -22,28 +22,27 @@ namespace Mankala
 
         public void DrawBoard(Graphics gr, Board board)
         {
-            GeneralPocket[] pockets = board.pocketList;
             Brush p1Brush = new SolidBrush(Color.Black);
             Brush p2Brush = new SolidBrush(Color.Gray);
             Brush r = new SolidBrush(Color.Red);
             Brush w = new SolidBrush(Color.White);
             Font f = DefaultFont;
-            int pocketsPP = pockets.Length / 2;
-            allPockets = new Rectangle[pockets.Length];
+            int pocketsPP = board.ListLength / 2;
+            allPockets = new Rectangle[board.ListLength];
             
             //Draw homePocket p2
             int x = 25;
             int y = 75;
             gr.FillRectangle(p2Brush, makeHomePocket(x,y));
             gr.DrawString("0", f, r, x, y);
-            gr.DrawString(pockets[0].GetAmountOfStones().ToString(), f, w, x+20, y+45);
+            gr.DrawString(board.HomepocketP2.AmountofStones.ToString(), f, w, x+20, y+45);
             allPockets[0] = makeHomePocket(x, y);
             
             //Draw homePocket p1
             x = 75 * (pocketsPP) + 25;
             gr.FillRectangle(p1Brush, makeHomePocket(x, y));
             gr.DrawString((pocketsPP).ToString(), f, r, x, y);
-            gr.DrawString(pockets[pocketsPP].GetAmountOfStones().ToString(), f, w, x + 20, y + 45);
+            gr.DrawString(board.HomepocketP1.AmountofStones.ToString(), f, w, x + 20, y + 45);
             allPockets[pocketsPP] = makeHomePocket(x, y);
 
             //normal pockets for p2
@@ -53,16 +52,16 @@ namespace Mankala
                 y = 50;
                 gr.FillRectangle(p2Brush, makePocket(x,y));
                 gr.DrawString(i.ToString(),f, r, x, y);
-                string stonesInPocket = pockets[i].GetAmountOfStones().ToString();
+                string stonesInPocket = board.GetAtIndex(i).AmountofStones.ToString();
                 gr.DrawString(stonesInPocket, f, w, x + 20, y + 20);
                 allPockets[i] = makePocket(x, y);
             }
 
             //Normal pockets for p1
-            for(int i = pocketsPP + 1; i < pockets.Length; i++)
+            for(int i = pocketsPP + 1; i < board.ListLength; i++)
             {
-                string stonesInPocket = pockets[i].GetAmountOfStones().ToString();
-                int drawPos = pockets.Length - i;
+                string stonesInPocket = board.GetAtIndex(i).AmountofStones.ToString();
+                int drawPos = board.ListLength - i;
                 x = 25 + 75 * drawPos;
                 y = 150;
                 gr.FillRectangle(p1Brush, makePocket(x, y));

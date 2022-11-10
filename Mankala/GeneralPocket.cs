@@ -11,7 +11,6 @@ namespace Mankala
         protected int amountOfStones;
         protected int index;
         protected Player owner;
-
         public abstract bool UpdatePocket(Player player);
         public virtual int EmptyPocket()
         {
@@ -25,23 +24,16 @@ namespace Mankala
             //Adds Stones to this pocket
             amountOfStones += a;
         }
-        public bool IsEmpty()
+        public int Index
         {
-            //Checks if the pocket is empty
-            return amountOfStones == 0;
+            get { return index; }
         }
-
-        public virtual Player GetOwner()
-        {
-            return owner;
+        public int AmountofStones{
+            get { return amountOfStones; }
         }
-        public virtual int GetAmountOfStones()
+        public bool IsOwner(Player p)
         {
-            return amountOfStones;
-        }
-        public virtual int GetIndex()
-        {
-            return index;
+            return p == owner;
         }
 
 

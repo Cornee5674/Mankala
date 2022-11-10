@@ -30,19 +30,19 @@ namespace Mankala
             Player playerAtTurn = move.currentPlayer;
             GeneralPocket endingPocket = move.endingPocket;
 
-            bool endPocketIsOwn = endingPocket.GetOwner() == playerAtTurn;
+            bool endPocketIsOwn = endingPocket.IsOwner(playerAtTurn);
             
             //An empty pocket has 1 stone after the move is done
-            bool endPocketIsEmpty = endingPocket.GetAmountOfStones() == 1;
+            bool endPocketIsEmpty = endingPocket.AmountofStones == 1;
             GeneralPocket opposing = GetOpposing(endingPocket, board);
-            bool opposingIsEmpty = opposing.GetAmountOfStones() <= 1;
+            bool opposingIsEmpty = opposing.AmountofStones <= 1;
 
             //Last stone lands in homePocket of player
             if (endingPocket is HomePocket)
                 return false;
 
             //Last stone ends in non empty pocket
-            if (endingPocket.GetAmountOfStones() > 1)
+            if (endingPocket.AmountofStones > 1)
                 throw new Exception("This point shouldn't be reached"); //Shouldn't be reached cuz forced move
 
             //Last stone ends in empty pocket of opponent
@@ -60,10 +60,12 @@ namespace Mankala
                 int a = endingPocket.EmptyPocket();
                 int b = opposing.EmptyPocket();
                 //Checks which homepocket belongs to the player and adds tot that one
-                if (board.pocketList[0].GetOwner() == playerAtTurn)
-                    board.pocketList[0].AddStones(a + b);
-                else
-                    board.pocketList[board.pocketList.Length / 2].AddStones(a + b);
+                int homePocketIndex = board.GetHomePocket(playerAtTurn).Index;
+                //if (board.HomepocketP1.IsOwner(playerAtTurn))
+                //    board.HomepocketP1.AddStones(a + b);
+                //else
+                //    board.HomepocketP2.AddStones(a + b);
+                board.GetAtIndex(homePocketIndex).AddStones(a + b);
                 return true;
             }
             throw new Exception("This should not be reached");
@@ -73,12 +75,12 @@ namespace Mankala
         {
             //Creates a factory and asks the factory to create a board
             MankalaFactory f = new MankalaFactory();
-            return f.createBoard(amountOfPockets,hasHomePockets,stonesPerPocket,p1,p2);
+            return f.CreateBoard(amountOfPockets,hasHomePockets,stonesPerPocket,p1,p2);
         }
         public override bool IsForcedTurn(Move move, Board board)
         {
             //If the last stone lands in another pocket than the home pocket and it isn't empty its a forced turn
-            if (move.endingPocket is Pocket && move.endingPocket.GetAmountOfStones() > 1)
+            if (move.endingPocket is Pocket && move.endingPocket.AmountofStones > 1)
                 return true;
             return false;
 

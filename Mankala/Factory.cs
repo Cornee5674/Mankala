@@ -8,7 +8,7 @@ namespace Mankala
 {
     class BoardFactory
     {
-        public virtual Board createBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
+        public virtual Board CreateBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
         {
             int lengthArray;
                 lengthArray = 2 * pocketsPerPlayer + 2;
@@ -33,16 +33,16 @@ namespace Mankala
 
     class MankalaFactory : BoardFactory
     {
-        public override Board createBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
+        public override Board CreateBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
         {
-            return base.createBoard(pocketsPerPlayer, hasHomePockets, stonesPerPocket,p1,p2);
+            return base.CreateBoard(pocketsPerPlayer, hasHomePockets, stonesPerPocket,p1,p2);
         }
     }
     class WakiFactory : BoardFactory
     {
-        public override Board createBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
+        public override Board CreateBoard(int pocketsPerPlayer, bool hasHomePockets, int stonesPerPocket, Player p1, Player p2)
         {
-            return base.createBoard(pocketsPerPlayer, hasHomePockets, stonesPerPocket, p1, p2);
+            return base.CreateBoard(pocketsPerPlayer, hasHomePockets, stonesPerPocket, p1, p2);
         }
     }
 }

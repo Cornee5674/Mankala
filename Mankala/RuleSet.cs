@@ -20,14 +20,13 @@ namespace Mankala
         public virtual bool GameIsFinished(Board board, Player playerAtTurn)
         {
             //In most versions the game ends when a player has no more pockets with stones in them
-            GeneralPocket[] temp = board.pocketList;
-            for (int i = 0; i < temp.Length; i++)
+            for (int i = 0; i < board.ListLength; i++)
             {
-                if (!(temp[i] is Pocket)) //Ignore homePockets
+                if (!(board.GetAtIndex(i) is Pocket)) //Ignore homePockets
                     continue;
-                if (temp[i].GetOwner() != playerAtTurn) //Ignore pockets of the opposing player
+                if (!board.GetAtIndex(i).IsOwner(playerAtTurn)) //Ignore pockets of the opposing player
                     continue;
-                if (temp[i].GetAmountOfStones() != 0) // If any pocket is not empty the game isnt finished yet
+                if (board.GetAtIndex(i).AmountofStones != 0) // If any pocket is not empty the game isnt finished yet
                     return false;
             }
             return true;
@@ -36,24 +35,23 @@ namespace Mankala
         protected GeneralPocket GetOpposing(GeneralPocket originalPocket, Board board)
         {
             //Returns the pocket which is on the other side of the board
-            int index = originalPocket.GetIndex();
+            int index = originalPocket.Index;
             int x = amountOfPockets - index;
             int pocketIndexOpposing = amountOfPockets + 2 + x;
             //Deals with the looping around the board
-            if (pocketIndexOpposing >= board.pocketList.Length)
-                pocketIndexOpposing -= board.pocketList.Length;
-            return board.pocketList[pocketIndexOpposing];
+            if (pocketIndexOpposing >= board.ListLength)
+                pocketIndexOpposing -= board.ListLength;
+            return board.GetAtIndex(pocketIndexOpposing);
         }
         protected void AddToHomePocket(Player p, int stones, Board board)
         {
+            int index;
             //Adds a specific amount of stones to the homepocket of the specified player
-            if (board.pocketList[0].GetOwner() == p)
-            {
-                board.pocketList[0].AddStones(stones);
-                return;
-            }
-            board.pocketList[amountOfPockets + 1].AddStones(stones);
-
+            if (board.HomepocketP1.IsOwner(p))
+                index = board.HomepocketP1.Index;
+            else
+                index = board.HomepocketP2.Index;
+            board.GetAtIndex(index).AddStones(stones);
         }
         public abstract bool IsForcedTurn(Move move, Board board);
     }

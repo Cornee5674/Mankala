@@ -25,7 +25,6 @@ namespace Mankala
             this.DoubleBuffered = true;
             DrawStartScreen();
         }
-        
         private void InitValuesConfirm(object sender, EventArgs e)
         {
             //Event handler from the confirm button when selecting your rules
@@ -84,7 +83,7 @@ namespace Mankala
 
             playerAtTurnLabel = new Label();
             playerAtTurnLabel.Location = new Point(s.Width / 2, 10);
-            playerAtTurnLabel.Text = player1.playerName + " is at Turn";
+            playerAtTurnLabel.Text = player1.Name + " is at Turn";
             screen.Controls.Add(playerAtTurnLabel);
 
             nextForcedTurnButton = new Button();
@@ -97,12 +96,12 @@ namespace Mankala
             Label p1 = new Label();
             p1.AutoSize = true;
             p1.Location = new Point(25, 190);
-            p1.Text = player1.playerName;
+            p1.Text = player1.Name;
 
             Label p2 = new Label();
             p2.AutoSize = true;
             p2.Location = new Point(25, 30);
-            p2.Text = player2.playerName;
+            p2.Text = player2.Name;
 
             screen.Controls.Add(p1);
             screen.Controls.Add(p2);
@@ -111,7 +110,7 @@ namespace Mankala
         private Size CalcScreenSize()
         {
             //Method that calculates the size of the screen based on the size of the board
-            return new Size(75 * (board.pocketList.Length/2) + 125, 250);
+            return new Size(75 * (board.ListLength/2) + 125, 250);
         }
         private void ReDraw(object obj, PaintEventArgs pea)
         {
@@ -141,17 +140,16 @@ namespace Mankala
             }
             return -1; //return -1 if no square was clicked
         }
-
         public void WantToDoTurn(int index, bool isFirst)
         {
             if (ruleset.GameIsFinished(board, currentPlayer))
             {
-                int stonesp2 = board.pocketList[0].GetAmountOfStones();
-                int stonesp1 = board.pocketList[board.pocketList.Length/2].GetAmountOfStones();
+                int stonesp2 = board.HomepocketP2.AmountofStones;
+                int stonesp1 = board.HomepocketP1.AmountofStones;
                 if (stonesp1 > stonesp2)
-                    MessageBox.Show("The game is finished. " + player2.playerName + " wins!");
+                    MessageBox.Show("The game is finished. " + player1.Name + " wins!");
                 else if (stonesp1 < stonesp2)
-                    MessageBox.Show("The game is finished. " + player1.playerName + " wins!");
+                    MessageBox.Show("The game is finished. " + player2.Name + " wins!");
                 else
                     MessageBox.Show("The game is finished. It is a draw");
                 return;
@@ -159,10 +157,10 @@ namespace Mankala
                 
             Move move;
             int chosenPocket = index;
-            int halfOfPockets = board.pocketList.Length / 2;
+            int halfOfPockets = board.ListLength / 2;
 
             //If there is a forced move you have to play that and can't play anything else
-            if (nextForcedMove >= 0 && nextForcedMove != index)
+            if (nextForcedMove >= 0)
             {
                 MessageBox.Show("You have a forced move");
                 return;
@@ -174,7 +172,7 @@ namespace Mankala
             if (isFirst)
             {
                 //Checks if the move is illegal, and returns if this is the case
-                if (board.pocketList[chosenPocket].IsEmpty())
+                if (board.GetAtIndex(chosenPocket).AmountofStones == 0)
                 {
                     MessageBox.Show("Illegal move: " + chosenPocket + " is empty");
                     return;
@@ -189,7 +187,7 @@ namespace Mankala
                     MessageBox.Show("Illegal move: " + chosenPocket + " is not your pocket");
                     return;
                 }
-                if (board.pocketList[chosenPocket] is HomePocket)
+                if (board.GetAtIndex(chosenPocket) is HomePocket)
                 {
                     MessageBox.Show("Illegal move: " + chosenPocket + " is a Homepocket");
                     return;
@@ -203,7 +201,7 @@ namespace Mankala
             //Checks if the next move will be a forced one
             if (ruleset.IsForcedTurn(move, board))
             {
-                nextForcedMove = move.endingPocket.GetIndex();
+                nextForcedMove = move.endingPocket.Index;
                 nextForcedTurnButton.Visible = true;
             }
             //Checks if the other player has his turn now
@@ -228,14 +226,12 @@ namespace Mankala
             //Method that changes the current player and updates the label at the top
             if (current == player1)
             {
-                playerAtTurnLabel.Text = player2.playerName + " is at Turn";
+                playerAtTurnLabel.Text = player2.Name + " is at Turn";
                 return player2;
-
             }
-            playerAtTurnLabel.Text = player1.playerName + " is at Turn";
+            playerAtTurnLabel.Text = player1.Name + " is at Turn";
             return player1;
         }
-
         private void DrawStartScreen()
         {
             //Designer generated code

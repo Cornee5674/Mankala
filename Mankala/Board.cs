@@ -8,29 +8,51 @@ namespace Mankala
 {
     internal class Board
     {
-        public GeneralPocket[] pocketList;
-
+        private readonly GeneralPocket[] _pocketList;
         public Board(GeneralPocket[] list)
         {
-            pocketList = list;
+            _pocketList = list;
         }
-
         public Move DoTurn(Player player, int pocketIndex)
         {
-            int stonesInHand = pocketList[pocketIndex].EmptyPocket();
+            int stonesInHand = _pocketList[pocketIndex].EmptyPocket();
             
             while(stonesInHand != 0)
             {
                 pocketIndex--; //Rotate counter-Clockwise so decrease pocketindex
 
                 if (pocketIndex < 0) //Loop back to the end of the pockets if needed
-                    pocketIndex = pocketList.Length - 1;
+                    pocketIndex = _pocketList.Length - 1;
 
                 //Only if we put a stone in this pocket we remove a stone from our hand
-                if (pocketList[pocketIndex].UpdatePocket(player))
+                if (_pocketList[pocketIndex].UpdatePocket(player))
                     stonesInHand--;               
             }
-            return new Move(player, pocketList[pocketIndex]);
+            return new Move(player, _pocketList[pocketIndex]);
+        }
+        public GeneralPocket GetAtIndex(int index)
+        {
+            return _pocketList[index];
+        }
+        public GeneralPocket GetHomePocket(Player p)
+        {
+            if (HomepocketP1.IsOwner(p))
+                return HomepocketP1;
+            return HomepocketP2;
+        }
+        public int ListLength
+        {
+            get { return _pocketList.Length; }
+        }
+        public GeneralPocket HomepocketP1
+        {
+            get { return _pocketList[ListLength / 2]; }
+            set { _pocketList[ListLength / 2] = value; }
+        }
+        public GeneralPocket HomepocketP2
+        {
+            get { return _pocketList[0]; }
+            set { _pocketList[0] = value; }
         }
     }
 }
