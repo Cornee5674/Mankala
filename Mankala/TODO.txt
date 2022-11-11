@@ -1,13 +1,13 @@
 ﻿--Code gedeelte
-Eigen variant aan regels					[]
+Eigen variant aan regels					[x]
 Refactoring									[]
 Schrijven van tests							[]
 Factory moet beter							[x]
 remove exceptions after extensive testing	[]
 
 --Verslag
-klassendiagram bijwerken					[]
-Toelichting verschil met vorige diagram		[]
-Code kwaliteit verhaaltje					[x]
+klassendiagram bijwerken					[x]
+Toelichting verschil met vorige diagram		[x]
+Code kwaliteit verhaaltje					[]
 System tests								[]
 Taakverdeling								[]

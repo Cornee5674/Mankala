@@ -34,7 +34,7 @@ namespace Mankala
             
             //An empty pocket has 1 stone after the move is done
             bool endPocketIsEmpty = endingPocket.AmountofStones == 1;
-            GeneralPocket opposing = GetOpposing(endingPocket, board);
+            GeneralPocket opposing = board.GetOpposing(endingPocket);
             bool opposingIsEmpty = opposing.AmountofStones <= 1;
 
             //Last stone lands in homePocket of player
@@ -61,19 +61,12 @@ namespace Mankala
                 int b = opposing.EmptyPocket();
 
                 //Add stones to homepocket of the player
-                int homePocketIndex = board.GetHomePocket(playerAtTurn).Index;
-                board.GetAtIndex(homePocketIndex).AddStones(a + b);
+                board.AddToHomePocket(playerAtTurn,a + b);
                 return true;
             }
             throw new Exception("This should not be reached");
         }
 
-        public override Board MakeBoard(Board b, Player p1, Player p2)
-        {
-            //Creates a factory and asks the factory to create a board
-            BoardFactory f = new BoardFactory();
-            return f.CreateBoard(amountOfPockets,hasHomePockets,stonesPerPocket,p1,p2);
-        }
         public override bool IsForcedTurn(Move move, Board board)
         {
             //If the last stone lands in another pocket than the home pocket and it isn't empty its a forced turn

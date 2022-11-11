@@ -22,10 +22,6 @@ namespace Mankala
             this.stonesPerPocket = stonesPerPocket;
             hasForcedMoves = false;
         }
-        public override bool GameIsFinished(Board board, Player p)
-        {
-            return base.GameIsFinished(board, p);
-        }
 
         public override bool IsForcedTurn(Move move, Board board)
         {
@@ -33,12 +29,6 @@ namespace Mankala
             return false;
         }
 
-        public override Board MakeBoard(Board b, Player p1, Player p2)
-        {
-            BoardFactory f = new BoardFactory();
-            return f.CreateBoard(amountOfPockets, hasHomePockets, stonesPerPocket, p1, p2);
-            
-        }
 
         public override bool NeedToSwitchPlayer(Move move, Board board)
         {
@@ -52,7 +42,7 @@ namespace Mankala
             if(endingPocket.AmountofStones == 2 || endingPocket.AmountofStones == 3)
             {
                 int stones = endingPocket.EmptyPocket();
-                AddToHomePocket(playerAtTurn, stones, board);
+                board.AddToHomePocket(playerAtTurn, stones);
             }
             return true;
 

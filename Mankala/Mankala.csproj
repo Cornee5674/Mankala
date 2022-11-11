@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="AmondiRuleSet.cs" />
     <Compile Include="WakiRuleset.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Screen.cs">

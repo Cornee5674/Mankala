@@ -33,27 +33,27 @@ namespace Mankala
             //Draw homePocket p2
             int x = 25;
             int y = 75;
-            gr.FillRectangle(p2Brush, makeHomePocket(x,y));
+            gr.FillRectangle(p2Brush, MakeHomePocket(x,y));
             gr.DrawString("0", f, r, x, y);
             gr.DrawString(board.HomepocketP2.AmountofStones.ToString(), f, w, x+20, y+45);
-            allPockets[0] = makeHomePocket(x, y);
+            allPockets[0] = MakeHomePocket(x, y);
             
             //Draw homePocket p1
             x = 75 * (pocketsPP) + 25;
-            gr.FillRectangle(p1Brush, makeHomePocket(x, y));
+            gr.FillRectangle(p1Brush, MakeHomePocket(x, y));
             gr.DrawString((pocketsPP).ToString(), f, r, x, y);
             gr.DrawString(board.HomepocketP1.AmountofStones.ToString(), f, w, x + 20, y + 45);
-            allPockets[pocketsPP] = makeHomePocket(x, y);
+            allPockets[pocketsPP] = MakeHomePocket(x, y);
             //normal pockets for p2
             for (int i = 1; i < pocketsPP; i++)
             {
                 x = 25 + 75 * i;
                 y = 50;
-                gr.FillRectangle(p2Brush, makePocket(x,y));
+                gr.FillRectangle(p2Brush, MakePocket(x,y));
                 gr.DrawString(i.ToString(),f, r, x, y);
                 string stonesInPocket = board.GetAtIndex(i).AmountofStones.ToString();
                 gr.DrawString(stonesInPocket, f, w, x + 20, y + 20);
-                allPockets[i] = makePocket(x, y);
+                allPockets[i] = MakePocket(x, y);
             }
 
             //Normal pockets for p1
@@ -63,22 +63,22 @@ namespace Mankala
                 int drawPos = board.ListLength - i;
                 x = 25 + 75 * drawPos;
                 y = 150;
-                gr.FillRectangle(p1Brush, makePocket(x, y));
+                gr.FillRectangle(p1Brush, MakePocket(x, y));
                 gr.DrawString(i.ToString(), f, r, x, y);
                 gr.DrawString(stonesInPocket, f, w, x + 20, y + 20);
-                allPockets[i] = makePocket(x, y);
+                allPockets[i] = MakePocket(x, y);
             }
 
         }
 
-        private Rectangle makePocket(int x, int y)
+        private Rectangle MakePocket(int x, int y)
         {
             //Creates a normal Pockets which always have the same size
             Point l = new Point(x,y);
             Size s = new Size(50, 50);
             return new Rectangle(l, s);
         }
-        private Rectangle makeHomePocket(int x, int y)
+        private Rectangle MakeHomePocket(int x, int y)
         {
             //Creates a home Pockets which always have the same size
             Point l = new Point(x, y);

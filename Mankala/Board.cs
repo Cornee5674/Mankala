@@ -34,11 +34,27 @@ namespace Mankala
         {
             return _pocketList[index];
         }
-        public GeneralPocket GetHomePocket(Player p)
+        public GeneralPocket GetOpposing(GeneralPocket originalPocket)
         {
+            //Returns the pocket which is on the other side of the board
+            int amountOfPockets = (ListLength - 2) / 2;
+            int index = originalPocket.Index;
+            int x = amountOfPockets - index;
+            int pocketIndexOpposing = amountOfPockets + 2 + x;
+            //Deals with the looping around the board
+            if (pocketIndexOpposing >= ListLength)
+                pocketIndexOpposing -= ListLength;
+            return GetAtIndex(pocketIndexOpposing);
+        }
+        public void AddToHomePocket(Player p, int stones)
+        {
+            int index;
+            //Adds a specific amount of stones to the homepocket of the specified player
             if (HomepocketP1.IsOwner(p))
-                return HomepocketP1;
-            return HomepocketP2;
+                index = HomepocketP1.Index;
+            else
+                index = HomepocketP2.Index;
+            GetAtIndex(index).AddStones(stones);
         }
         public int ListLength
         {

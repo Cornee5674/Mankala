@@ -10,8 +10,8 @@ namespace Mankala
 {
     internal class Game : Form
     {
-        Player player1;
-        Player player2;
+        Player p1;
+        Player p2;
         Player currentPlayer;
         Board board;
         RuleSet ruleset;
@@ -42,19 +42,19 @@ namespace Mankala
                 return;
             }
 
-            if (MankalaButton.Checked)
+            if (mankalaButton.Checked)
                 ruleset = new MankalaRuleset(pocketsPP, stonesPP);
             else if (wakiButton.Checked)
                 ruleset = new WakiRuleset(pocketsPP, stonesPP);
-            else if (customButton.Checked)
-                throw new NotImplementedException();
+            else if (amondiButton.Checked)
+                ruleset = new AmondiRuleSet(pocketsPP,stonesPP);
             else
             {
                 MessageBox.Show("Please make a complete choice first");
                 return;
             }
-            player1 = new Player(player1Name.Text);
-            player2 = new Player(player2Name.Text);
+            p1 = new Player(player1Name.Text);
+            p2 = new Player(player2Name.Text);
 
             //Clears the current fields
             this.Controls.Clear();
@@ -66,8 +66,8 @@ namespace Mankala
         private void DrawBoard()
         {
             //Create board
-            board = ruleset.MakeBoard(board, player1, player2);
-            currentPlayer = player1;
+            board = ruleset.MakeBoard(p1, p2);
+            currentPlayer = p1;
             Size s = CalcScreenSize();
             this.Size = s;
 
@@ -83,7 +83,7 @@ namespace Mankala
 
             playerAtTurnLabel = new Label();
             playerAtTurnLabel.Location = new Point(s.Width / 2, 10);
-            playerAtTurnLabel.Text = player1.Name + " is at Turn";
+            playerAtTurnLabel.Text = this.p1.Name + " is at Turn";
             screen.Controls.Add(playerAtTurnLabel);
 
             nextForcedTurnButton = new Button();
@@ -96,12 +96,12 @@ namespace Mankala
             Label p1 = new Label();
             p1.AutoSize = true;
             p1.Location = new Point(25, 190);
-            p1.Text = player1.Name;
+            p1.Text = this.p1.Name;
 
             Label p2 = new Label();
             p2.AutoSize = true;
             p2.Location = new Point(25, 30);
-            p2.Text = player2.Name;
+            p2.Text = this.p2.Name;
 
             screen.Controls.Add(p1);
             screen.Controls.Add(p2);
@@ -142,14 +142,16 @@ namespace Mankala
         }
         public void WantToDoTurn(int index, bool isFirst)
         {
+            
+
             if (ruleset.GameIsFinished(board, currentPlayer))
             {
                 int stonesp2 = board.HomepocketP2.AmountofStones;
                 int stonesp1 = board.HomepocketP1.AmountofStones;
                 if (stonesp1 > stonesp2)
-                    MessageBox.Show("The game is finished. " + player1.Name + " wins!");
+                    MessageBox.Show("The game is finished. " + p1.Name + " wins!");
                 else if (stonesp1 < stonesp2)
-                    MessageBox.Show("The game is finished. " + player2.Name + " wins!");
+                    MessageBox.Show("The game is finished. " + p2.Name + " wins!");
                 else
                     MessageBox.Show("The game is finished. It is a draw");
                 return;
@@ -160,7 +162,7 @@ namespace Mankala
             int halfOfPockets = board.ListLength / 2;
 
             //If there is a forced move you have to play that and can't play anything else
-            if (nextForcedMove >= 0)
+            if (nextForcedMove >= 0 && isFirst)
             {
                 MessageBox.Show("You have a forced move");
                 return;
@@ -177,12 +179,12 @@ namespace Mankala
                     MessageBox.Show("Illegal move: " + chosenPocket + " is empty");
                     return;
                 }
-                if (index<halfOfPockets && currentPlayer == player1)
+                if (index<halfOfPockets && currentPlayer == p1)
                 {
                     MessageBox.Show("Illegal move: " + chosenPocket + " is not your pocket");
                     return;
                 }
-                if(index >= halfOfPockets && currentPlayer == player2)
+                if(index >= halfOfPockets && currentPlayer == p2)
                 {
                     MessageBox.Show("Illegal move: " + chosenPocket + " is not your pocket");
                     return;
@@ -224,13 +226,13 @@ namespace Mankala
         private Player PlayerChange(Player current)
         {
             //Method that changes the current player and updates the label at the top
-            if (current == player1)
+            if (current == p1)
             {
-                playerAtTurnLabel.Text = player2.Name + " is at Turn";
-                return player2;
+                playerAtTurnLabel.Text = p2.Name + " is at Turn";
+                return p2;
             }
-            playerAtTurnLabel.Text = player1.Name + " is at Turn";
-            return player1;
+            playerAtTurnLabel.Text = p1.Name + " is at Turn";
+            return p1;
         }
         private void DrawStartScreen()
         {
@@ -244,9 +246,9 @@ namespace Mankala
             this.label5 = new System.Windows.Forms.Label();
             this.player1Name = new System.Windows.Forms.TextBox();
             this.player2Name = new System.Windows.Forms.TextBox();
-            this.MankalaButton = new System.Windows.Forms.RadioButton();
+            this.mankalaButton = new System.Windows.Forms.RadioButton();
             this.wakiButton = new System.Windows.Forms.RadioButton();
-            this.customButton = new System.Windows.Forms.RadioButton();
+            this.amondiButton = new System.Windows.Forms.RadioButton();
             this.initConfirmButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.amountOfPocketsField)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.amountOfStonesField)).BeginInit();
@@ -327,14 +329,14 @@ namespace Mankala
             // 
             // radioButton1
             // 
-            this.MankalaButton.AutoSize = true;
-            this.MankalaButton.Location = new System.Drawing.Point(10, 236);
-            this.MankalaButton.Name = "MankalaButton";
-            this.MankalaButton.Size = new System.Drawing.Size(82, 21);
-            this.MankalaButton.TabIndex = 8;
-            this.MankalaButton.TabStop = true;
-            this.MankalaButton.Text = "Mankala";
-            this.MankalaButton.UseVisualStyleBackColor = true;
+            this.mankalaButton.AutoSize = true;
+            this.mankalaButton.Location = new System.Drawing.Point(10, 236);
+            this.mankalaButton.Name = "MankalaButton";
+            this.mankalaButton.Size = new System.Drawing.Size(82, 21);
+            this.mankalaButton.TabIndex = 8;
+            this.mankalaButton.TabStop = true;
+            this.mankalaButton.Text = "Mankala";
+            this.mankalaButton.UseVisualStyleBackColor = true;
             // 
             // radioButton2
             // 
@@ -349,14 +351,14 @@ namespace Mankala
             // 
             // radioButton3
             // 
-            this.customButton.AutoSize = true;
-            this.customButton.Location = new System.Drawing.Point(242, 236);
-            this.customButton.Name = "customButton";
-            this.customButton.Size = new System.Drawing.Size(76, 21);
-            this.customButton.TabIndex = 10;
-            this.customButton.TabStop = true;
-            this.customButton.Text = "Custom";
-            this.customButton.UseVisualStyleBackColor = true;
+            this.amondiButton.AutoSize = true;
+            this.amondiButton.Location = new System.Drawing.Point(242, 236);
+            this.amondiButton.Name = "amondiButton";
+            this.amondiButton.Size = new System.Drawing.Size(76, 21);
+            this.amondiButton.TabIndex = 10;
+            this.amondiButton.TabStop = true;
+            this.amondiButton.Text = "Amondi";
+            this.amondiButton.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -372,9 +374,9 @@ namespace Mankala
             // 
             this.ClientSize = new System.Drawing.Size(365, 316);
             this.Controls.Add(this.initConfirmButton);
-            this.Controls.Add(this.customButton);
+            this.Controls.Add(this.amondiButton);
             this.Controls.Add(this.wakiButton);
-            this.Controls.Add(this.MankalaButton);
+            this.Controls.Add(this.mankalaButton);
             this.Controls.Add(this.player2Name);
             this.Controls.Add(this.player1Name);
             this.Controls.Add(this.label5);
@@ -400,9 +402,9 @@ namespace Mankala
         private Label label5;
         private TextBox player1Name;
         private TextBox player2Name;
-        private RadioButton MankalaButton;
+        private RadioButton mankalaButton;
         private RadioButton wakiButton;
-        private RadioButton customButton;
+        private RadioButton amondiButton;
         private Button initConfirmButton;
         private Label label1;
     }
