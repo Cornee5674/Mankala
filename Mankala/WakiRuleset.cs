@@ -35,7 +35,7 @@ namespace Mankala
 
         public override Board MakeBoard(Board b, Player p1, Player p2)
         {
-            WakiFactory f = new WakiFactory();
+            BoardFactory f = new BoardFactory();
             return f.CreateBoard(amountOfPockets, hasHomePockets, stonesPerPocket, p1, p2);
             
         }

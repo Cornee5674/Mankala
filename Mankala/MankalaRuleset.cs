@@ -59,12 +59,9 @@ namespace Mankala
                 //Stones of ending pocket and opposing pocket will be added to homepocket
                 int a = endingPocket.EmptyPocket();
                 int b = opposing.EmptyPocket();
-                //Checks which homepocket belongs to the player and adds tot that one
+
+                //Add stones to homepocket of the player
                 int homePocketIndex = board.GetHomePocket(playerAtTurn).Index;
-                //if (board.HomepocketP1.IsOwner(playerAtTurn))
-                //    board.HomepocketP1.AddStones(a + b);
-                //else
-                //    board.HomepocketP2.AddStones(a + b);
                 board.GetAtIndex(homePocketIndex).AddStones(a + b);
                 return true;
             }
@@ -74,7 +71,7 @@ namespace Mankala
         public override Board MakeBoard(Board b, Player p1, Player p2)
         {
             //Creates a factory and asks the factory to create a board
-            MankalaFactory f = new MankalaFactory();
+            BoardFactory f = new BoardFactory();
             return f.CreateBoard(amountOfPockets,hasHomePockets,stonesPerPocket,p1,p2);
         }
         public override bool IsForcedTurn(Move move, Board board)

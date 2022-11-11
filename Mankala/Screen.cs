@@ -44,7 +44,6 @@ namespace Mankala
             gr.DrawString((pocketsPP).ToString(), f, r, x, y);
             gr.DrawString(board.HomepocketP1.AmountofStones.ToString(), f, w, x + 20, y + 45);
             allPockets[pocketsPP] = makeHomePocket(x, y);
-
             //normal pockets for p2
             for (int i = 1; i < pocketsPP; i++)
             {
