@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MankalaUnitTests")]
 
 namespace Mankala
 {
@@ -12,6 +14,13 @@ namespace Mankala
         public Board(GeneralPocket[] list)
         {
             _pocketList = list;
+        }
+        public void printPockets()
+        {
+            for (int i = 0; i < _pocketList.Length; i++)
+            {
+                Console.WriteLine(_pocketList[i]);
+            }
         }
         public Move DoTurn(Player player, int pocketIndex)
         {
