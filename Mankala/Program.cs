@@ -16,6 +16,9 @@ namespace Mankala
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            BoardFactory boardFactory = new BoardFactory();
+            Board test = boardFactory.CreateBoard(3, true, 4, new Player("f"), new Player("D"));
+            test.printPockets();
             Application.Run(new Game());
         }
     }
